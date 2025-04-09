@@ -14,7 +14,7 @@ Cada tipo de café terá suas características, alguns terão leite e/ou gelo co
     Será utilizado o simulador EdSim51, que foi empregado em todas as aulas de Arquitetura de Computadores, na linguagem Assembly.
 
 **_Ideias iniciais - 8/04/2025:_**
-    Em um conceito geral, vamos simular um seletor de tipos de café (onde serão os 6 tipos que foram mencionados anteriormente), o seletor de de quantidade (Espresso 40ml ou Lungo 110ml), controle de ingredientes, exibição no display sobre a quantidade restante de água, café moído e leite, e impedir o preparo caso algum ingrediente necessário esteja em falta.
+    Em um conceito geral, vamos simular um seletor de tipos de café (onde serão os 6 tipos que foram mencionados anteriormente), o seletor de quantidade (Espresso 40ml ou Lungo 110ml), controle de ingredientes, exibição no display sobre a quantidade restante de água, café moído e leite, e impedir o preparo caso algum ingrediente necessário esteja em falta.
 
 
 # Lista, primeiras implementações

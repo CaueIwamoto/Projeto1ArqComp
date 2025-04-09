@@ -16,7 +16,7 @@ Cada tipo de café terá suas características, alguns terão leite e/ou gelo co
 **_Ideias iniciais - 8/04/2025:_**
     Em um conceito geral, vamos simular um seletor de tipos de café (onde serão os 6 tipos que foram mencionados anteriormente), o seletor de de quantidade (Espresso 40ml ou Lungo 110ml), controle de ingredientes, exibição no display sobre a quantidade restante de água, café moído e leite, e impedir o preparo caso algum ingrediente necessário esteja em falta.
 
-**_Lista, primeiras implementações:_** 
+
 # Lista, primeiras implementações
 1. Seleção do tipo de café e quantidade: usar switches de entrada para representar os botões de seleção, por exemplo: P1.0 a P1.2 para tipo de café. P1.3 para a quantidade.
 2. Verificação de ingredientes: variáveis que armazenarão os níveis de ingredientes e cada vez que um café for preparado, subtrair as quantidades.

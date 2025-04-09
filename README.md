@@ -10,6 +10,18 @@ Projeto da matéria Arquitetura de Computadores - FEI
 
 Cada tipo de café terá suas características, alguns terão leite e/ou gelo como opções. E a máquina não pode faltar água e café. Poderá ser implementado, nos displays, a quantidade restante de água, leite e café moído inseridos na máquina.
 
+**Tabela dos cafés e seus respectivos ingredientes necessários ou não:**
+
+| Tipo de café | Água | Café moído | Leite | Gelo |
+| :---         |:---: | :---:      | :---: | ---: |
+| Espresso     | ✔️   | ✔️        |       |      |
+| Coado        | ✔️   | ✔️        |       |      |
+| Cappuccino   | ✔️   | ✔️        |✔️    |      |
+| Barista      | ✔️   | ✔️        |✔️    |      |
+| Caffè Latte  | ✔️   | ✔️        |✔️    |      |
+| Caffè Gelatto| ✔️   | ✔️        |✔️    |✔️    |
+
+
 **Metodologia:**
     Será utilizado o simulador EdSim51, que foi empregado em todas as aulas de Arquitetura de Computadores, na linguagem Assembly.
 

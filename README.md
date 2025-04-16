@@ -35,3 +35,12 @@ Cada tipo de café terá suas características, alguns terão leite e/ou gelo co
 3. Displays de nível: ver sobre os displays do EdSim51 para mostrar os níveis de ingredientes.
 4. Preparo: após o usuário ter selecionado o tipo de café (1.) e a máquina ter verificado os ingredientes (2.), simular o preparo onde um LED pode piscar ou acionar uma saída.
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**16/04/2025**
+Possíveis próximas ideias à serem implementadas no projeto:
++ Mostrar cada ingrediente em uma tela diferente do display (ao invés de todos juntos);
++ Reabastecer os ingredientes manualmente por botões;
++ Adicionar um pisca LED de alerta se o ingrediente acabar;
++ Adicionar um alerta visual ou talvez um som se faltar algo.
+
+

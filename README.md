@@ -39,6 +39,7 @@ Cada tipo de café terá suas características, alguns terão leite e/ou gelo co
 **16/04/2025**
 Possíveis próximas ideias à serem implementadas no projeto:
 + Mensagem de boas vindas;
++ Exibir os tipos de café e quantidade que o usuário desejar;
 + Mostrar cada ingrediente em uma tela diferente do display (ao invés de todos juntos);
 + Reabastecer os ingredientes manualmente por botões;
 + Adicionar um pisca LED de alerta se o ingrediente acabar;

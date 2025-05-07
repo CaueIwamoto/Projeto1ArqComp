@@ -1,6 +1,6 @@
 ;Mapeamento:
-    RS equ P1.3    ;Reg Select ligado em P1.3
-    EN equ P1.2    ;Enable ligado em P1.2
+    RS equ P1.3    ;Seleção pino 3 porta 1, P1.3
+    EN equ P1.2    ;Ativando pino 2 porta 1, P1.2
 
 ;INICIO
 				ORG 0000h
@@ -9,12 +9,12 @@
 				ORG 0030h
 
 ;Parte inicial, apresentaçao da máquina, escolha do tipo de café e confirmação:
-MAQUINA:
-	DB "MAQUINA DE"
+APRESENTACAO1:
+	DB "SEJA BEM"
 	DB 00h 
 	
-CAFE:
-	DB "CAFE"
+APRESENTACAO2:
+	DB "VINDO!"
 	DB 00h 
 
 ESCOLHA:
@@ -26,7 +26,7 @@ SABOR:
 	DB 00h 
 
 DIGITO1:
-	DB "DIGITE 1|2|3"
+	DB "DIGITE 1,2,3"
 	DB 00h 
 
 ESPRESSO:
@@ -34,7 +34,7 @@ ESPRESSO:
 	DB 00h 
 
 DIGITO2:
-	DB "DIGITE 4|5|6"
+	DB "DIGITE 4,5,6"
 	DB 00h 
 
 CAPUCCINO:
@@ -42,11 +42,11 @@ CAPUCCINO:
 	DB 00h 
 
 DIGITO3:
-	DB "DIGITE 7|8|9"
+	DB "DIGITE 7,8,9"
 	DB 00h 
 
 COADO:
-	DB "COADO"
+	DB "PARA COADO"
 	DB 00h 
 
 PERGUNTA:
@@ -74,7 +74,11 @@ COADO1:
 	DB 00h
 
 PREPARANDO:
-	DB "PREPARANDO..."
+	DB "PREPARANDO"
+	DB 00h
+
+CAFE:
+	DB "CAFE..."
 	DB 00h
 
 PRONTO:
@@ -113,25 +117,26 @@ ROTINA:
 	ACALL clearDisplay
 	ACALL leituraTeclado
 	MOV A, #03h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 
-;Endereco inicial de memoria da String, parte inicial da máquina:
-	MOV DPTR, #MAQUINA 
+;String inicial da maquina, de msg de BEM VINDO:
+	MOV DPTR, #APRESENTACAO1 
 	ACALL escreveStringROM
-	MOV A, #46h
- 	ACALL posicionaCursor
-	MOV DPTR, #CAFE         
+	MOV A, #45h
+ 	ACALL posicaoLetraDisplay
+	MOV DPTR, #APRESENTACAO2         
 	ACALL escreveStringROM	
 	CALL delay
 	ACALL clearDisplay
+	MOV A, #06h
+
+;Parte display, SABOR string e ESPRESSO:
 	MOV A, #03h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #ESCOLHA		
 	ACALL escreveStringROM
 	MOV A, #45h
-	ACALL posicionaCursor
-
-;Endereco inicial de memória da String SABOR:
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #SABOR
 	ACALL escreveStringROM
 	MOV A, R5
@@ -139,43 +144,43 @@ ROTINA:
 	DIV AB
 	ADD A, #30h
 	CALL delay
-	ACALL sendCharacter
+	ACALL enviaLetra
 	ACALL clearDisplay
 	MOV A, #02h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #DIGITO1		
 	ACALL escreveStringROM
 	MOV A, #41h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #ESPRESSO		
 	ACALL escreveStringROM
 	CALL delay
 	ACALL clearDisplay
 	MOV A, #02h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 
-;Endereco inicial de mem ria da String DIGITO2:
+;Parte String CAPUCCINO e COADO:
 	MOV DPTR, #DIGITO2
 	ACALL escreveStringROM
 	MOV A, #43h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #CAPUCCINO	 
 	ACALL escreveStringROM
 	CALL delay
 	ACALL clearDisplay
 	MOV A, #02h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #DIGITO3		 
 	ACALL escreveStringROM
 	MOV A, #43h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #COADO	
 	ACALL escreveStringROM
 	CALL delay
-	ACALL sendCharacter
+	ACALL enviaLetra
 	ACALL clearDisplay
 	MOV A, #03h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #ESCOLHA
 	ACALL escreveStringROM
 	CALL delay
@@ -218,11 +223,11 @@ PROXIMO2:
 QUESTIONA:	
 	ACALL clearDisplay
 	MOV A, #01h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #PERGUNTA
 	ACALL escreveStringROM
 	MOV A, #43h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #ESPRESSO1
 	ACALL escreveStringROM
 	MOV A, R4
@@ -230,14 +235,14 @@ QUESTIONA:
 	DIV AB
 	ADD A, #30h
 	CALL delay
-	ACALL sendCharacter
+	ACALL enviaLetra
 	ACALL clearDisplay
 	MOV A, #05h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #CONFIRMACAO
 	ACALL escreveStringROM
 	MOV A, #45h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #CONFIRMACAO1
 	ACALL escreveStringROM
 	CALL delay
@@ -256,30 +261,30 @@ PROXIMO3:
 PROXIMO4:
 	JMP OPCAO1
 
-
+;String parte de confirmação tipo café:
 QUESTIONA1:
 	ACALL clearDisplay
 	MOV A, #01h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #PERGUNTA
 	ACALL escreveStringROM
 	MOV A, #43h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #CAPUCCINO1
 	ACALL escreveStringROM
 	MOV A, R4
 	MOV B, #10
 	DIV AB
 	ADD A, #30h
-	ACALL sendCharacter
+	ACALL enviaLetra
 	CALL delay
 	ACALL clearDisplay
 	MOV A, #05h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #CONFIRMACAO
 	ACALL escreveStringROM
 	MOV A, #45h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #CONFIRMACAO1
 	ACALL escreveStringROM
 	CALL delay
@@ -296,30 +301,30 @@ PROXIMO5:
 PROXIMO6:
 	JMP OPCAO2
 
-;Limpa display:
+;Limpa/atualiza display:
 QUESTIONA2:
 	ACALL clearDisplay
 	MOV A, #01h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #PERGUNTA
 	ACALL escreveStringROM
 	MOV A, #42h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #COADO1
 	ACALL escreveStringROM
 	MOV A, R4
 	MOV B, #10
 	DIV AB
 	ADD A, #30h
-	ACALL sendCharacter
+	ACALL enviaLetra
 	CALL delay
 	ACALL clearDisplay
 	MOV A, #05h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #CONFIRMACAO
 	ACALL escreveStringROM
 	MOV A, #45h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #CONFIRMACAO1
 	ACALL escreveStringROM
 	CALL delay
@@ -337,21 +342,27 @@ PROXIMO7:
 PROXIMO8:
 	JMP OPCAO3
 
+;String PREPARANDO:
 PREPARANDO1:
 	ACALL clearDisplay
-	MOV A, #02h
-	ACALL posicionaCursor
+	MOV A, #03h
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #PREPARANDO
 	ACALL escreveStringROM
+	MOV A, #44h        
+	ACALL posicaoLetraDisplay
+	MOV DPTR, #CAFE
+	ACALL escreveStringROM
+	;CALL delay
 	CALL delay1
 PRONTO2:
 	ACALL clearDisplay
 	MOV A, #02h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #PRONTO
 	ACALL escreveStringROM
 	MOV A, #44h
-	ACALL posicionaCursor
+	ACALL posicaoLetraDisplay
 	MOV DPTR, #PRONTO1
 	ACALL escreveStringROM
 	CALL delay1
@@ -359,67 +370,67 @@ PRONTO2:
 	LJMP ROTINA
 
 
-;Inicia a String no CAFE:
+;Inicia a String CAFE:
 escreveStringROM:
   MOV R1, #00h
 
 ;LOOP:
 loop:
-    MOV A, R1
+	MOV A, R1
 	MOVC A,@A+DPTR  ;lê memória do programa
 	JZ finish		;se o acumulador for 0, então o fim da data foi atingindo, 
 	                ;saindo do loop
 	
-	ACALL sendCharacter	;manda data do acumulador para módulo do LCD display
+	ACALL enviaLetra	;manda data do acumulador para módulo do LCD display
 	INC R1			
-    MOV A, R1
+  	MOV A, R1
 	JMP loop  ;repete o loop
 finish:
 	RET
 
 leituraTeclado:
-    MOV R0, #0           ; zera R0 para começar a verificação
-    CLR F0
+  	MOV R0, #0 ; zera R0 para começar a verificação
+  	CLR F0
 
-    ;escaneia a primeira linha
-    MOV P0, #0FFh   
-    CLR P0.0            ;limpa a primeira linha
-    CALL colScan        ;chama subrotina para escanear as colunas
-    JB F0, finish1      ;se a flag F0 estiver definida, sai da subrotina
+;escaneia a primeira linha:
+	MOV P0, #0FFh   
+  	CLR P0.0            ;limpa a primeira linha
+  	CALL colScan        ;chama subrotina para escanear as colunas
+  	JB F0, finish1      ;se a flag F0 estiver definida, sai da subrotina
 
-    ;escaneia a segunda linha
-    SETB P0.0           ;define a primeira linha
-    CLR P0.1            ;limpa a segunda linha
-    CALL colScan        ;chama subrotina para escanear as colunas
-    JB F0, finish1      ;se F0 for definida, sai da subrotina
+;escaneia a segunda linha:
+  	SETB P0.0           ;define a primeira linha
+  	CLR P0.1            ;limpa a segunda linha
+	CALL colScan        ;chama subrotina para escanear as colunas
+  	JB F0, finish1      ;se F0 for definida, sai da subrotina
 
-    ;escaneia a terceira linha
-    SETB P0.1           ;define a segunda linha
-    CLR P0.2            ;limpa a terceira linha
-    CALL colScan        ;chama subrotina para escanear as colunas
-    JB F0, finish1      ;se F0 for definida, sai da subrotina
+;escaneia a terceira linha:
+ 	SETB P0.1           ;define a segunda linha
+ 	CLR P0.2            ;limpa a terceira linha
+ 	CALL colScan        ;chama subrotina para escanear as colunas
+  	JB F0, finish1      ;se F0 for definida, sai da subrotina
 
-    ;escaneia a quarta linha
-    SETB P0.2           ;define a terceira linha
-    CLR P0.3            ;limpa a quarta linha
-    CALL colScan        ;chama subrotina para escanear as colunas
-    JB F0, finish1      ;se F0 for definida, sai da subrotina
+;escaneia a quarta linha
+ 	SETB P0.2					;define a terceira linha
+  	CLR P0.3					;limpa a quarta linha
+  	CALL colScan				;chama subrotina para escanear as colunas
+  	JB F0, finish1			;se F0 for definida, sai da subrotina
 
 finish1:
-    RET                 ;retorna se nenhuma tecla foi pressionada
+	RET ;retorna se nenhuma tecla foi pressionada
 
 colScan:
-    JNB P0.4, gotKey    ;se a primeira coluna estiver limpa, tecla foi pressionada
-    INC R0              ;incrementa para verificar a próxima tecla
-    JNB P0.5, gotKey    ;verifica a segunda coluna
-    INC R0              ;incrementa para verificar a próxima tecla
-    JNB P0.6, gotKey    ;verifica a terceira coluna
-    INC R0              ;incrementa para verificar a próxima tecla
-    RET                 ;retorna se nenhuma tecla foi encontrada
+  	JNB P0.4, gotKey    ;se a primeira coluna estiver limpa, tecla foi pressionada
+  	INC R0              ;incrementa para verificar a próxima tecla
+  	JNB P0.5, gotKey    ;verifica a segunda coluna
+  	INC R0              ;incrementa para verificar a próxima tecla
+  	JNB P0.6, gotKey    ;verifica a terceira coluna
+  	INC R0              ;incrementa para verificar a próxima tecla
+  	RET                 ;retorna se nenhuma tecla foi encontrada
 
 gotKey:
-    SETB F0             ;define a flag F0 para indicar que uma tecla foi encontrada
-    RET                 ;retorna se uma tecla foi encontrada
+  	SETB F0             ;define a flag F0 para indicar que uma tecla foi encontrada
+  	RET                 ;retorna se uma tecla foi encontrada
 
 ;inicializa display, também parte do mapeamento:
 lcd_init:
@@ -436,9 +447,6 @@ lcd_init:
 
 ;chama delay:
 	CALL delay	
-
-
-
 	SETB EN
 	CLR EN
 
@@ -449,7 +457,6 @@ lcd_init:
 
 ;chama delay novamente:
 	CALL delay
-
 
 	CLR P1.7
 	CLR P1.6
@@ -466,8 +473,6 @@ lcd_init:
 	CLR EN
 
 	CALL delay
-
-
 
 	CLR P1.7
 	CLR P1.6
@@ -489,7 +494,7 @@ lcd_init:
 	RET
 
 ;Função que envia a letra:
-sendCharacter:
+enviaLetra:
 	SETB RS
 	MOV C, ACC.7
 	MOV P1.7, C	
@@ -520,7 +525,7 @@ sendCharacter:
 	RET
 
 ;Posiciona o cursor na linha e coluna desejada
-posicionaCursor:
+posicaoLetraDisplay:
 	CLR RS	
 	SETB P1.7
 	MOV C, ACC.6
@@ -551,7 +556,7 @@ posicionaCursor:
 
 
 ;Retorna o cursor para primeira posição sem limpar/atualizar o display:
-retornaCursor:
+retornaLetra:
 	CLR RS	
 	CLR P1.7
 	CLR P1.6

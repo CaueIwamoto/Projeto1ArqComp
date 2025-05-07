@@ -29,7 +29,6 @@ Próximas ideias à serem implementadas no projeto:
 + Exibir os tipos de café no menu;
 + Realizar os mapeamentos das teclas;
 + Fazer teclas de confirmação de SIM e NÃO.
-
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #**Diagrama de blocos, feito no papel:**

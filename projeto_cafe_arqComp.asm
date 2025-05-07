@@ -1,210 +1,615 @@
-					ORG 0000H
+;Mapeamento:
+    RS equ P1.3    ;Reg Select ligado em P1.3
+    EN equ P1.2    ;Enable ligado em P1.2
 
-					LJMP INICIO
+;INICIO
+				ORG 0000h
+				LJMP START
 
-;Definindo vari·veis e dados:
-					ORG 0030H
-;Agua, 9 unidades:
-agua: DB 09H
+				ORG 0030h
 
-;Cafe moÌdo, 9 unidades:
-cafe: DB 09H
+;Parte inicial, apresenta√ßao da m√°quina, escolha do tipo de caf√© e confirma√ß√£o:
+MAQUINA:
+	DB "MAQUINA DE"
+	DB 00h 
+	
+CAFE:
+	DB "CAFE"
+	DB 00h 
 
-;Leite, 6 unidades:
-leite: DB 06H
+ESCOLHA:
+	DB "ESCOLHA UM"
+	DB 00h 
 
-;Gelo, 3 unidades:
-gelo: DB 03H
+SABOR:
+	DB "SABOR"
+	DB 00h 
 
+DIGITO1:
+	DB "DIGITE 1|2|3"
+	DB 00h 
 
-INICIO:
-	MOV P3, #00H  ;desliga o led de preparo
-	MOV P2, #00H  ;atualiza/limpa displays
+ESPRESSO:
+	DB "PARA  ESPRESSO"
+	DB 00h 
 
-;Loop, para mostrar e rodar no display:
-LOOP:
-	MOV A, P1
-	ANL A, #0FH   ;isola P1.0 a P1.3
+DIGITO2:
+	DB "DIGITE 4|5|6"
+	DB 00h 
 
-	MOV R0, A
+CAPUCCINO:
+	DB "CAPUCCINO"
+	DB 00h 
 
-;Determinando tipo de cafÈ e quantidade (espresso ou lungo):
-	MOV A, R0
-	ANL A, #07H   ;tipo de cafÈ (0 a 5)
-	MOV R1, A
+DIGITO3:
+	DB "DIGITE 7|8|9"
+	DB 00h 
 
-	MOV A, R0
-	ANL A, #08H  ;QUANTIDADE
+COADO:
+	DB "COADO"
+	DB 00h 
 
-	JZ QUANT_ESPRESSO  ;bit 3 = 0 espresso
-	MOV R2, #02H
-	LJMP CHECAR_TIPO
+PERGUNTA:
+	DB "VOCE  ESCOLHEU"
+	DB 00h
 
-;QUANTIDADE ESPRESSO FUN«√O:
-QUANT_ESPRESSO:
-	MOV R2, #01H    ;espresso = uma unidade de cada
+CONFIRMACAO:
+	DB "*  SIM"
+	DB 00h
 
+CONFIRMACAO1:
+	DB "#  NAO"
+	DB 00h
 
-;verificaÁ„o do tipo de cafÈ e ingredientes:
-CHECAR_TIPO:
-	MOV A, R1
-	CJNE A, #00H, T1
-	ACALL VERIFICA_AGUA
-	ACALL VERIFICA_CAFE
-	LJMP PREPARAR
+ESPRESSO1:
+	DB "ESPRESSO"
+	DB 00h
 
-;cafÈs: espresso, coado, cappuccino,
-;barista, caffe latte e caffe gelatto
+CAPUCCINO1:
+	DB "CAPUCCINO"
+	DB 00h
 
-T1: CJNE A, #01H, T2
-	ACALL VERIFICA_AGUA
-	ACALL VERIFICA_CAFE
-	LJMP PREPARAR
+COADO1:
+	DB "   COADO"
+	DB 00h
 
-T2: CJNE A, #02H, T3
-	ACALL VERIFICA_AGUA
-	ACALL VERIFICA_CAFE
-	ACALL VERIFICA_LEITE
-	LJMP PREPARAR
+PREPARANDO:
+	DB "PREPARANDO..."
+	DB 00h
 
-T3: CJNE A, #03H, T4
-	ACALL VERIFICA_AGUA
-	ACALL VERIFICA_CAFE
-	ACALL VERIFICA_LEITE
-	LJMP PREPARAR
+PRONTO:
+	DB "SEU CAFE ESTA"
+	DB 00h
 
-T4: CJNE A, #04H, T5
-	ACALL VERIFICA_AGUA
-	ACALL VERIFICA_CAFE
-	ACALL VERIFICA_LEITE
-	LJMP PREPARAR
-
-T5:
-	ACALL VERIFICA_AGUA
-	ACALL VERIFICA_CAFE
-	ACALL VERIFICA_LEITE
-	ACALL VERIFICA_GELO
-
-	LJMP PREPARAR
+PRONTO1:
+	DB "PRONTO!"
+	DB 00h
 
 
-;funÁ„o para simular o preparo:
-PREPARAR:
-	ACALL SUB_AGUA
-	ACALL SUB_CAFE
-	MOV A, R1
-	CJNE A, #00H, CHK1
-	LJMP LIGAR_LED
+ORG 0100h
 
-CHK1: CJNE A, #01H, CHK2
-	LJMP LIGAR_LED
+START:
+;MAPEAMENTO BOT√ïES TECLA:
+	MOV 40H, #'#' 
+	MOV 41H, #'0'
+	MOV 42H, #'*'
+	MOV 43H, #'9'
+	MOV 44H, #'8'
+	MOV 45H, #'7'
+	MOV 46H, #'6'
+	MOV 47H, #'5'
+	MOV 48H, #'4'
+	MOV 49H, #'3'
+	MOV 4AH, #'2'
+	MOV 4BH, #'1'
 
-CHK2: CJNE A, #02H, CHK3
-	ACALL SUB_LEITE
-	LJMP LIGAR_LED
+;main:
+MAIN:
+	MOV R5, #100
+	MOV R4, #150
+	ACALL lcd_init
+	
+ROTINA:
+	ACALL clearDisplay
+	ACALL leituraTeclado
+	MOV A, #03h
+	ACALL posicionaCursor
 
-CHK3: CJNE A, #03H, CHK4
-	ACALL SUB_LEITE
-	LJMP LIGAR_LED
+;Endereco inicial de memoria da String, parte inicial da m√°quina:
+	MOV DPTR, #MAQUINA 
+	ACALL escreveStringROM
+	MOV A, #46h
+ 	ACALL posicionaCursor
+	MOV DPTR, #CAFE         
+	ACALL escreveStringROM	
+	CALL delay
+	ACALL clearDisplay
+	MOV A, #03h
+	ACALL posicionaCursor
+	MOV DPTR, #ESCOLHA		
+	ACALL escreveStringROM
+	MOV A, #45h
+	ACALL posicionaCursor
 
-CHK4: CJNE A, #04H, CHK5
-	ACALL SUB_LEITE
-	LJMP LIGAR_LED
+;Endereco inicial de mem√≥ria da String SABOR:
+	MOV DPTR, #SABOR
+	ACALL escreveStringROM
+	MOV A, R5
+	MOV B, #10
+	DIV AB
+	ADD A, #30h
+	CALL delay
+	ACALL sendCharacter
+	ACALL clearDisplay
+	MOV A, #02h
+	ACALL posicionaCursor
+	MOV DPTR, #DIGITO1		
+	ACALL escreveStringROM
+	MOV A, #41h
+	ACALL posicionaCursor
+	MOV DPTR, #ESPRESSO		
+	ACALL escreveStringROM
+	CALL delay
+	ACALL clearDisplay
+	MOV A, #02h
+	ACALL posicionaCursor
 
-CHK5: 
-	ACALL SUB_LEITE
-	ACALL SUB_GELO
+;Endereco inicial de mem ria da String DIGITO2:
+	MOV DPTR, #DIGITO2
+	ACALL escreveStringROM
+	MOV A, #43h
+	ACALL posicionaCursor
+	MOV DPTR, #CAPUCCINO	 
+	ACALL escreveStringROM
+	CALL delay
+	ACALL clearDisplay
+	MOV A, #02h
+	ACALL posicionaCursor
+	MOV DPTR, #DIGITO3		 
+	ACALL escreveStringROM
+	MOV A, #43h
+	ACALL posicionaCursor
+	MOV DPTR, #COADO	
+	ACALL escreveStringROM
+	CALL delay
+	ACALL sendCharacter
+	ACALL clearDisplay
+	MOV A, #03h
+	ACALL posicionaCursor
+	MOV DPTR, #ESCOLHA
+	ACALL escreveStringROM
+	CALL delay
 
-;ligar led:
-LIGAR_LED:
-	SETB P3.0
-	ACALL DELAY
-	CLR P3.0
-
-	ACALL ATUALIZA_DISPLAY
-
-	LJMP LOOP
-
-;sub rotinas da verificaÁ„o cafÈ e ingredientes
-VERIFICA_AGUA:
-	MOV A, agua
-	CJNE A, #00H, RET_AGUA
-	LJMP LOOP
-;return:
-RET_AGUA: RET
-
-VERIFICA_CAFE:
-	MOV A, cafe
-	CJNE A, #00H, RET_CAFE
-	LJMP LOOP
-;return:
-RET_CAFE: RET
-
-VERIFICA_LEITE:
-	MOV A, leite
-	CJNE A, #00H, RET_LEITE
-	LJMP LOOP
-;return:
-RET_LEITE: RET
-
-VERIFICA_GELO:
-	MOV A, gelo
-	CJNE A, #00H, RET_GELO
-	LJMP LOOP
-;return:
-RET_GELO: RET
+;Sub leitura teclado das op√ß√µes:
+OPCAO:
+	ACALL leituraTeclado
+	CJNE R0, #11h, OPCAOO1
+	ACALL QUESTIONA
+OPCAOO1:
+	CJNE R0, #10h, OPCAOO2
+	ACALL QUESTIONA
+OPCAOO2:
+	CJNE R0, #9h, OPCAOO3
+	ACALL QUESTIONA
+OPCAOO3:
+	CJNE R0, #8h, OPCAOO4
+	ACALL QUESTIONA1
+OPCAOO4:
+	CJNE R0, #7h, OPCAOO5
+	ACALL QUESTIONA1
+OPCAOO5:
+	CJNE R0, #6h, OPCAOO6
+	ACALL QUESTIONA1
+OPCAOO6:
+	CJNE R0, #5h, OPCAOO7
+	ACALL QUESTIONA2
+OPCAOO7:
+	CJNE R0, #4h, OPCAOO8
+	ACALL QUESTIONA2
+OPCAOO8:
+	CJNE R0, #3h, PROXIMO2
+	ACALL QUESTIONA2
+PROXIMO2:
+	JNB F0, OPCAO
+;Retorna para op√ß√£o at√© usar o teclado
 
 
-;sub rotinas da simulaÁao do preparo
-;onde os ingredientes s„o subtraidos
-SUB_AGUA:
-	MOV A, agua
-	CLR C
-	SUBB A, R2
-	MOV agua, A
+;Fun√ß√£o QUESTIONA, onde pergunta para usu√°rio a confirma√ß√£o do tipo de caf√©:
+QUESTIONA:	
+	ACALL clearDisplay
+	MOV A, #01h
+	ACALL posicionaCursor
+	MOV DPTR, #PERGUNTA
+	ACALL escreveStringROM
+	MOV A, #43h
+	ACALL posicionaCursor
+	MOV DPTR, #ESPRESSO1
+	ACALL escreveStringROM
+	MOV A, R4
+	MOV B, #10
+	DIV AB
+	ADD A, #30h
+	CALL delay
+	ACALL sendCharacter
+	ACALL clearDisplay
+	MOV A, #05h
+	ACALL posicionaCursor
+	MOV DPTR, #CONFIRMACAO
+	ACALL escreveStringROM
+	MOV A, #45h
+	ACALL posicionaCursor
+	MOV DPTR, #CONFIRMACAO1
+	ACALL escreveStringROM
+	CALL delay
+	JMP OPCAO1
+RET
+
+;Retorna para a OPCAO1 at√© usar as teclas * ou # (*Sim  #N√£o):
+OPCAO1:
+	ACALL leituraTeclado
+	CJNE R0, #2h, PROXIMO3
+  	ACALL PREPARANDO1
+PROXIMO3:
+	CJNE R0, #0h, PROXIMO4
+	ACALL clearDisplay
+	ACALL ROTINA
+PROXIMO4:
+	JMP OPCAO1
+
+
+QUESTIONA1:
+	ACALL clearDisplay
+	MOV A, #01h
+	ACALL posicionaCursor
+	MOV DPTR, #PERGUNTA
+	ACALL escreveStringROM
+	MOV A, #43h
+	ACALL posicionaCursor
+	MOV DPTR, #CAPUCCINO1
+	ACALL escreveStringROM
+	MOV A, R4
+	MOV B, #10
+	DIV AB
+	ADD A, #30h
+	ACALL sendCharacter
+	CALL delay
+	ACALL clearDisplay
+	MOV A, #05h
+	ACALL posicionaCursor
+	MOV DPTR, #CONFIRMACAO
+	ACALL escreveStringROM
+	MOV A, #45h
+	ACALL posicionaCursor
+	MOV DPTR, #CONFIRMACAO1
+	ACALL escreveStringROM
+	CALL delay
+	JMP OPCAO2
+RET
+
+OPCAO2:
+	ACALL leituraTeclado
+	CJNE R0, #2h, PROXIMO5
+  	ACALL PREPARANDO1           
+PROXIMO5:
+	CJNE R0, #0h, PROXIMO6
+	ACALL ROTINA
+PROXIMO6:
+	JMP OPCAO2
+
+;Limpa display:
+QUESTIONA2:
+	ACALL clearDisplay
+	MOV A, #01h
+	ACALL posicionaCursor
+	MOV DPTR, #PERGUNTA
+	ACALL escreveStringROM
+	MOV A, #42h
+	ACALL posicionaCursor
+	MOV DPTR, #COADO1
+	ACALL escreveStringROM
+	MOV A, R4
+	MOV B, #10
+	DIV AB
+	ADD A, #30h
+	ACALL sendCharacter
+	CALL delay
+	ACALL clearDisplay
+	MOV A, #05h
+	ACALL posicionaCursor
+	MOV DPTR, #CONFIRMACAO
+	ACALL escreveStringROM
+	MOV A, #45h
+	ACALL posicionaCursor
+	MOV DPTR, #CONFIRMACAO1
+	ACALL escreveStringROM
+	CALL delay
+	JMP OPCAO3
+RET
+
+;Preparando:
+OPCAO3:
+	ACALL leituraTeclado
+	CJNE R0, #2h, PROXIMO7
+  	ACALL PREPARANDO1
+PROXIMO7:
+	CJNE R0, #0h, PROXIMO8
+	ACALL ROTINA
+PROXIMO8:
+	JMP OPCAO3
+
+PREPARANDO1:
+	ACALL clearDisplay
+	MOV A, #02h
+	ACALL posicionaCursor
+	MOV DPTR, #PREPARANDO
+	ACALL escreveStringROM
+	CALL delay1
+PRONTO2:
+	ACALL clearDisplay
+	MOV A, #02h
+	ACALL posicionaCursor
+	MOV DPTR, #PRONTO
+	ACALL escreveStringROM
+	MOV A, #44h
+	ACALL posicionaCursor
+	MOV DPTR, #PRONTO1
+	ACALL escreveStringROM
+	CALL delay1
+	ACALL clearDisplay
+	LJMP ROTINA
+
+
+;Inicia a String no CAFE:
+escreveStringROM:
+  MOV R1, #00h
+
+;LOOP:
+loop:
+    MOV A, R1
+	MOVC A,@A+DPTR  ;l√™ mem√≥ria do programa
+	JZ finish		;se o acumulador for 0, ent√£o o fim da data foi atingindo, 
+	                ;saindo do loop
+	
+	ACALL sendCharacter	;manda data do acumulador para m√≥dulo do LCD display
+	INC R1			
+    MOV A, R1
+	JMP loop  ;repete o loop
+finish:
 	RET
 
-SUB_CAFE:
-	MOV A, cafe
-	CLR C
-	SUBB A, R2
-	MOV cafe, A
+leituraTeclado:
+    MOV R0, #0           ; zera R0 para come√ßar a verifica√ß√£o
+    CLR F0
+
+    ;escaneia a primeira linha
+    MOV P0, #0FFh   
+    CLR P0.0            ;limpa a primeira linha
+    CALL colScan        ;chama subrotina para escanear as colunas
+    JB F0, finish1      ;se a flag F0 estiver definida, sai da subrotina
+
+    ;escaneia a segunda linha
+    SETB P0.0           ;define a primeira linha
+    CLR P0.1            ;limpa a segunda linha
+    CALL colScan        ;chama subrotina para escanear as colunas
+    JB F0, finish1      ;se F0 for definida, sai da subrotina
+
+    ;escaneia a terceira linha
+    SETB P0.1           ;define a segunda linha
+    CLR P0.2            ;limpa a terceira linha
+    CALL colScan        ;chama subrotina para escanear as colunas
+    JB F0, finish1      ;se F0 for definida, sai da subrotina
+
+    ;escaneia a quarta linha
+    SETB P0.2           ;define a terceira linha
+    CLR P0.3            ;limpa a quarta linha
+    CALL colScan        ;chama subrotina para escanear as colunas
+    JB F0, finish1      ;se F0 for definida, sai da subrotina
+
+finish1:
+    RET                 ;retorna se nenhuma tecla foi pressionada
+
+colScan:
+    JNB P0.4, gotKey    ;se a primeira coluna estiver limpa, tecla foi pressionada
+    INC R0              ;incrementa para verificar a pr√≥xima tecla
+    JNB P0.5, gotKey    ;verifica a segunda coluna
+    INC R0              ;incrementa para verificar a pr√≥xima tecla
+    JNB P0.6, gotKey    ;verifica a terceira coluna
+    INC R0              ;incrementa para verificar a pr√≥xima tecla
+    RET                 ;retorna se nenhuma tecla foi encontrada
+
+gotKey:
+    SETB F0             ;define a flag F0 para indicar que uma tecla foi encontrada
+    RET                 ;retorna se uma tecla foi encontrada
+
+;inicializa display, tamb√©m parte do mapeamento:
+lcd_init:
+
+	CLR RS		
+
+	CLR P1.7		
+	CLR P1.6
+	SETB P1.5
+	CLR P1.4
+
+	SETB EN
+	CLR EN
+
+;chama delay:
+	CALL delay	
+
+
+
+	SETB EN
+	CLR EN
+
+	SETB P1.7
+
+	SETB EN
+	CLR EN
+
+;chama delay novamente:
+	CALL delay
+
+
+	CLR P1.7
+	CLR P1.6
+	CLR P1.5
+	CLR P1.4
+
+	SETB EN
+	CLR EN
+
+	SETB P1.6
+	SETB P1.5
+
+	SETB EN
+	CLR EN
+
+	CALL delay
+
+
+
+	CLR P1.7
+	CLR P1.6
+	CLR P1.5
+	CLR P1.4
+
+	SETB EN
+	CLR EN
+
+	SETB P1.7
+	SETB P1.6
+	SETB P1.5
+	SETB P1.4
+
+	SETB EN
+	CLR EN
+
+	CALL delay
 	RET
 
-SUB_LEITE:
-	MOV A, leite
-	CLR C
-	SUBB A, R2
-	MOV leite, A
+;Fun√ß√£o que envia a letra:
+sendCharacter:
+	SETB RS
+	MOV C, ACC.7
+	MOV P1.7, C	
+	MOV C, ACC.6
+	MOV P1.6, C	
+	MOV C, ACC.5
+	MOV P1.5, C	
+	MOV C, ACC.4
+	MOV P1.4, C	
+
+	SETB EN	
+	CLR EN	
+
+	MOV C, ACC.3
+	MOV P1.7, C	
+	MOV C, ACC.2
+	MOV P1.6, C	
+	MOV C, ACC.1
+	MOV P1.5, C	
+	MOV C, ACC.0
+	MOV P1.4, C	
+
+	SETB EN	
+	CLR EN	
+
+	CALL delay	
+	CALL delay	
 	RET
 
-SUB_GELO:
-	MOV A, gelo
-	CLR C
-	SUBB A, R2
-	MOV gelo, A
+;Posiciona o cursor na linha e coluna desejada
+posicionaCursor:
+	CLR RS	
+	SETB P1.7
+	MOV C, ACC.6
+	MOV P1.6, C	
+	MOV C, ACC.5
+	MOV P1.5, C	
+	MOV C, ACC.4
+	MOV P1.4, C	
+
+	SETB EN	
+	CLR EN	
+
+	MOV C, ACC.3
+	MOV P1.7, C	
+	MOV C, ACC.2
+	MOV P1.6, C	
+	MOV C, ACC.1
+	MOV P1.5, C	
+	MOV C, ACC.0
+	MOV P1.4, C	
+
+	SETB EN	
+	CLR EN	
+
+	CALL delay	
+	CALL delay  
 	RET
 
-;funcao atualiza_display, onde ele 
-;atualiza o nivel de agua no P2 apÛs
-;um cafÈ ter sido preparado
-ATUALIZA_DISPLAY:
-	MOV A, agua
-	MOV P2, A
+
+;Retorna o cursor para primeira posi√ß√£o sem limpar/atualizar o display:
+retornaCursor:
+	CLR RS	
+	CLR P1.7
+	CLR P1.6
+	CLR P1.5
+	CLR P1.4
+
+	SETB EN	
+	CLR EN
+
+	CLR P1.7
+	CLR P1.6
+	SETB P1.5
+	SETB P1.4
+
+	SETB EN	
+	CLR EN	
+
+	CALL delay	
 	RET
 
 
-;funcao delay, pausar o programa
-;durante execuÁ„o
-DELAY:
-	MOV R3, #0FFH
+;Limpa/atualiza o display:
+clearDisplay:
+	CLR RS	
+	CLR P1.7
+	CLR P1.6
+	CLR P1.5
+	CLR P1.4
 
-D1: 
-	MOV R4, #0FFH
+	SETB EN	
+	CLR EN
 
-D2: 
-	DJNZ R4, D2
-	DJNZ R3, D1
+	CLR P1.7
+	CLR P1.6
+	CLR P1.5
+	SETB P1.4
+
+	SETB EN
+	CLR EN
+
+	MOV R6, #40
+	rotC:
+	CALL delay
+	DJNZ R6, rotC
 	RET
 
-END
+
+;Primeiro delay:
+delay:
+	MOV R7, #50
+	DJNZ R7, $
+	RET
+
+;Segundo delay:
+delay1:
+	MOV R1, #10
+	loop1:
+	MOV R0, #255
+	DJNZ R0, $
+	DJNZ R1, loop1
+	RET

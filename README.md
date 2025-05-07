@@ -31,6 +31,12 @@ Próximas ideias à serem implementadas no projeto:
 + Fazer teclas de confirmação de SIM e NÃO.
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+#**Apresentação do código rodando em vídeo:**
+
+https://github.com/user-attachments/assets/c7f40ee0-289b-4d0e-913a-3c49986b6b33
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 #**Diagrama de blocos, feito no papel:**
 ![DiagramaDeBlocosArqComp](https://github.com/user-attachments/assets/5edbff0d-c782-48b9-86de-85617346afd3)
 

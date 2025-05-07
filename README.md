@@ -1,12 +1,13 @@
 # Projeto - Arquitetura de Computadores
 Projeto da matéria Arquitetura de Computadores - FEI
 
-**-Alunos:** 
-Cauê Meira, R.A: 22.221.039-5
-Haniel Franco, R.A: 22.125.071-5
-
+> Alunos:
+- Cauê Meira, R.A: 22.221.039-5
+- Haniel Franco, R.A: 22.125.071-5
 
 Ínicio do projeto: 8/04/2025
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #**Introdução:**
     Neste projeto, será realizado, um simulador de uma máquina de café em um display. Ele possuirá opções onde o usuário possa realizar a escolha de seu café, são eles:

@@ -37,6 +37,18 @@ https://github.com/user-attachments/assets/c7f40ee0-289b-4d0e-913a-3c49986b6b33
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+#**Imagens simulação IDE:**
+![IDE1](https://github.com/user-attachments/assets/469495c1-2ba3-490a-9468-7da8b21ef05d)
+![IDE2](https://github.com/user-attachments/assets/6b176cba-933e-446a-a7eb-5edc1f5a8e20)
+![IDE3](https://github.com/user-attachments/assets/88d98cd4-95d2-43d8-bcfd-a25488cbcd60)
+![IDE4](https://github.com/user-attachments/assets/8777ed34-e9be-4d78-b29f-449165fce884)
+![IDE5](https://github.com/user-attachments/assets/e76c04fc-9e9a-43f2-8054-d38863f36b80)
+![IDE6](https://github.com/user-attachments/assets/086a9684-b7a5-466a-8395-3a9bebf39b1c)
+![IDE7](https://github.com/user-attachments/assets/a4e6889b-a2ae-4e46-8fee-4ff6df5712da)
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 #**Diagrama de blocos, feito no papel:**
 ![DiagramaDeBlocosArqComp](https://github.com/user-attachments/assets/5edbff0d-c782-48b9-86de-85617346afd3)
 

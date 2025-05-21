@@ -1,9 +1,8 @@
 # Projeto - Arquitetura de Computadores
 Projeto da matéria Arquitetura de Computadores - FEI
 
-> Alunos:
+> Aluno:
 - Cauê Meira, R.A: 22.221.039-5
-- Haniel Franco, R.A: 22.125.071-5
 
 Ínicio do projeto: 8/04/2025
 
@@ -49,7 +48,7 @@ https://github.com/user-attachments/assets/c7f40ee0-289b-4d0e-913a-3c49986b6b33
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#**Diagrama de blocos, feito no papel:**
+#**Diagrama de blocos:**
 ![Diagrama de blocos](https://github.com/user-attachments/assets/5366ed23-e844-4286-9d9b-a5ec85a9835d)
 
 
